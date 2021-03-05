@@ -1,0 +1,21 @@
+branding:
+  color: green
+  icon: check-square
+description: 'Check markdown files '
+inputs:
+  max_title_length:
+    description: 'Maximum length for page title'
+    required: true
+    default: 70
+  max_description_length:
+    description: 'Maximum length for description'
+    required: true
+    default: 150
+  max_slug_length:
+    description: 'Maximum length for slug'
+    required: true
+    default: 100
+name: Markdown SEO Check
+runs:
+  main: dist/index.js
+  using: node12
