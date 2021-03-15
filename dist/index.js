@@ -15198,11 +15198,18 @@ function check(file) {
     value: parseInt(core.getInput('max_slug_length'))
   })
 
-  const frontmatter = gray_matter(file.content, {
-    engines: {
-      toml: toml.parse.bind(toml)
-    }
-  })
+  let frontmatter
+  if (file.content.startsWith('+++')) {
+    frontmatter = gray_matter(file.content, {
+      language: 'toml',
+      delims: '+++',
+      engines: {
+        toml: toml.parse.bind(toml)
+      }
+    })
+  } else {
+    frontmatter = gray_matter(file.content)
+  }
 
   if (
     !frontmatter ||

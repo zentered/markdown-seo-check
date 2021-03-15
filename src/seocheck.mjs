@@ -31,11 +31,18 @@ export default function check(file) {
     value: parseInt(core.getInput('max_slug_length'))
   })
 
-  const frontmatter = matter(file.content, {
-    engines: {
-      toml: toml.parse.bind(toml)
-    }
-  })
+  let frontmatter
+  if (file.content.startsWith('+++')) {
+    frontmatter = matter(file.content, {
+      language: 'toml',
+      delims: '+++',
+      engines: {
+        toml: toml.parse.bind(toml)
+      }
+    })
+  } else {
+    frontmatter = matter(file.content)
+  }
 
   if (
     !frontmatter ||
