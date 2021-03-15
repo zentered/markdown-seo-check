@@ -23,9 +23,22 @@ slug: much-too-long-indeed
 
 content`
 
+const toml = `+++
+title = "hello"
+description = "world"
+slug = "hello"
++++
+
+content`
+
 test('check() should validate seo requirements', () => {
   const actual = check({ name: 'test.md', content: validMd })
   expect(actual).toEqual({ file: 'test.md', ok: true })
+})
+
+test('check() work with TOML', () => {
+  const actual = check({ name: 'toml.md', content: toml })
+  expect(actual).toEqual({ file: 'toml.md', ok: true })
 })
 
 test('check() should error on missing seo requirements', () => {

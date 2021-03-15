@@ -35,11 +35,13 @@ Validate markdown files with SEO best practices. Creates a pull request comment 
 
 ## Inputs
 
-| Name                     | Requirement | Default | Description                   |
-| ------------------------ | ----------- | ------- | ----------------------------- |
-| `max_title_length`       | required    | 70      | Maximum length of page title  |
-| `max_description_length` | required    | 150     | Maximum length of description |
-| `max_slug_length`        | required    | 100     | Maximum length of slug        |
+| Name                     | Requirement | Default        | Description                                                                                                                             |
+| ------------------------ | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `includes`               | optional    | `{*.md,*.mdx}` | Glob to include specific files or folders. See [glob-to-regexp usage](https://www.npmjs.com/package/glob-to-regexp#usage) for examples. |
+| `excludes`               | optional    | ''             | Glob to exclude files or folders                                                                                                        |
+| `max_title_length`       | required    | 70             | Maximum length of page title                                                                                                            |
+| `max_description_length` | required    | 150            | Maximum length of description                                                                                                           |
+| `max_slug_length`        | required    | 100            | Maximum length of slug                                                                                                                  |
 
 ## Outputs
 

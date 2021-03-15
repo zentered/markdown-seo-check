@@ -22,7 +22,8 @@ async function run() {
       body: `SEO Check: \n\n${message}`
     })
 
-    if (hasErrors) {
+    if (hasErrors && hasErrors.length > 0) {
+      core.warning(hasErrors)
       core.setFailed('Check failed.')
     }
   } catch (error) {

@@ -1,5 +1,6 @@
 import core from '@actions/core'
 import matter from 'gray-matter'
+import toml from 'toml'
 
 function fails(frontmatter, elem, condition) {
   if (!frontmatter.data[elem]) {
@@ -30,7 +31,18 @@ export default function check(file) {
     value: parseInt(core.getInput('max_slug_length'))
   })
 
-  const frontmatter = matter(file.content)
+  let frontmatter
+  if (file.content.startsWith('+++')) {
+    frontmatter = matter(file.content, {
+      language: 'toml',
+      delims: '+++',
+      engines: {
+        toml: toml.parse.bind(toml)
+      }
+    })
+  } else {
+    frontmatter = matter(file.content)
+  }
 
   if (
     !frontmatter ||
