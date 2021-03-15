@@ -23,6 +23,7 @@ async function run() {
     })
 
     if (hasErrors) {
+      core.warning(hasErrors)
       core.setFailed('Check failed.')
     }
   } catch (error) {
