@@ -13,6 +13,7 @@ jobs:
       - name: Markdown SEO Check
         uses: ./
         with:
+          includes: 'test/pass/*.md'
           max_title_length: 70
           max_description_length: 150
           max_slug_length: 100

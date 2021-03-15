@@ -3,6 +3,14 @@ branding:
   icon: check-square
 description: 'Check markdown files '
 inputs:
+  includes:
+    description: Glob to include specific files or folders
+    required: false
+    default: '{*.md,*.mdx}'
+  excludes:
+    description: Glob to exclude specific files or folders
+    required: false
+    default: ''
   max_title_length:
     description: 'Maximum length for page title'
     required: true
