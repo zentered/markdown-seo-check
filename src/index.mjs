@@ -16,11 +16,13 @@ async function run() {
     hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
     const message = comment(results)
 
-    await octokit.issues.createComment({
-      ...context.repo,
-      issue_number: context.payload.number,
-      body: `SEO Check: \n\n${message}`
-    })
+    if (message && message.length > 0) {
+      await octokit.issues.createComment({
+        ...context.repo,
+        issue_number: context.payload.number,
+        body: `SEO Check: \n\n${message}`
+      })
+    }
 
     if (hasErrors && hasErrors.length > 0) {
       core.warning(hasErrors)

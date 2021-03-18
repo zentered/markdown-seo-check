@@ -1,12 +1,14 @@
 name: Integraton Test
 
-on: [pull_request]
+on: [pull_request_target]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - uses: actions/setup-node@v2.1.5
         with:
           version: 12

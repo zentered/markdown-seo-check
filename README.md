@@ -22,15 +22,29 @@ Validate markdown files with SEO best practices. Creates a pull request comment 
 
 ## Usage
 
+If your repo is public and you have pull requests from forks, `pull_request_target` is required, as this Action creates a comment on a Pull Request and therefore requires read/write permissions. Read more about the `pull_request_target` trigger [here](https://securitylab.github.com/research/github-actions-preventing-pwn-requests). If your repo is private, you can change this to `pull_request` and remove the `ref` in the checkout action.
+
 ```yaml
-- name: Markdown SEO Check
-  uses: zentered/markdown-seo-check@v1.0.0
-  with:
-    max_title_length: 70
-    max_description_length: 150
-    max_slug_length: 100
-  env:
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+name: check
+
+on: pull_request_target
+
+jobs:
+  seocheck:
+    name: Markdown SEO Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Markdown SEO Check
+        uses: zentered/markdown-seo-check@v1.1.0
+        with:
+          max_title_length: 70
+          max_description_length: 150
+          max_slug_length: 100
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ## Inputs
