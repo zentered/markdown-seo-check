@@ -12,10 +12,12 @@ async function run() {
   try {
     core.info(`Starting Markdown SEO Check ...`)
     const files = await listFiles()
+    if (!files || files.length === 0) {
+      return
+    }
     const results = files.map(checkMarkdownFile).filter((i) => i.file)
     hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
     const message = comment(results)
-
     if (message && message.length > 0) {
       await octokit.issues.createComment({
         ...context.repo,
