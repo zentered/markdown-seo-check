@@ -12,10 +12,12 @@ async function run() {
   try {
     core.info(`Starting Markdown SEO Check ...`)
     const files = await listFiles()
+    core.info('files')
+    core.info(files)
     const results = files.map(checkMarkdownFile).filter((i) => i.file)
-    hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
     core.info('results')
     core.info(results)
+    hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
     const message = comment(results)
     core.info('message')
     core.info(message)
