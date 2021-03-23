@@ -11,6 +11,7 @@ async function run() {
 
   try {
     core.info(`Starting Markdown SEO Check ...`)
+    core.info(JSON.stringify(context.payload, null, 2))
     const files = await listFiles()
     core.info('files')
     core.info(files)
