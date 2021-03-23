@@ -17832,17 +17832,13 @@ module.exports = /******/ (() => {
 
         try {
           core.info(`Starting Markdown SEO Check ...`)
-          core.info(JSON.stringify(context.payload, null, 2))
           const files = await listFiles_files()
-          core.info('files')
-          core.info(files)
+          if (!files || files.length === 0) {
+            return
+          }
           const results = files.map(check).filter((i) => i.file)
-          core.info('results')
-          core.info(results)
           hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
           const message = comment(results)
-          core.info('message')
-          core.info(message)
           if (message && message.length > 0) {
             await octokit.issues.createComment({
               ...context.repo,
