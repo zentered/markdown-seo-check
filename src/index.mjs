@@ -14,8 +14,11 @@ async function run() {
     const files = await listFiles()
     const results = files.map(checkMarkdownFile).filter((i) => i.file)
     hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
+    core.info('results')
+    core.info(results)
     const message = comment(results)
-
+    core.info('message')
+    core.info(message)
     if (message && message.length > 0) {
       await octokit.issues.createComment({
         ...context.repo,
