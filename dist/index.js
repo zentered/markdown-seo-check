@@ -1,5 +1,5 @@
 require('./sourcemap-register.js')
-module.exports = /******/ (() => {
+/******/ ;(() => {
   // webpackBootstrap
   /******/ var __webpack_modules__ = {
     /***/ 7351: /***/ function (
@@ -239,6 +239,7 @@ module.exports = /******/ (() => {
        */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       function setOutput(name, value) {
+        process.stdout.write(os.EOL)
         command_1.issueCommand('set-output', { name }, value)
       }
       exports.setOutput = setOutput
@@ -5343,7 +5344,9 @@ module.exports = /******/ (() => {
        */
 
       matter.cache = {}
-      matter.clearCache = () => (matter.cache = {})
+      matter.clearCache = function () {
+        matter.cache = {}
+      }
       module.exports = matter
 
       /***/
@@ -5683,13 +5686,17 @@ module.exports = /******/ (() => {
        * Returns true if `val` is a buffer
        */
 
-      exports.isBuffer = (val) => typeOf(val) === 'buffer'
+      exports.isBuffer = function (val) {
+        return typeOf(val) === 'buffer'
+      }
 
       /**
        * Returns true if `val` is an object
        */
 
-      exports.isObject = (val) => typeOf(val) === 'object'
+      exports.isObject = function (val) {
+        return typeOf(val) === 'object'
+      }
 
       /**
        * Cast `input` to a buffer
@@ -17628,240 +17635,6 @@ module.exports = /******/ (() => {
       /***/
     },
 
-    /***/ 8937: /***/ (
-      __unused_webpack___webpack_module__,
-      __webpack_exports__,
-      __nccwpck_require__
-    ) => {
-      'use strict'
-      // ESM COMPAT FLAG
-      __nccwpck_require__.r(__webpack_exports__)
-
-      // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-      var core = __nccwpck_require__(2186)
-      // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-      var github = __nccwpck_require__(5438)
-      // EXTERNAL MODULE: ./node_modules/gray-matter/index.js
-      var gray_matter = __nccwpck_require__(5382)
-      // EXTERNAL MODULE: ./node_modules/toml/index.js
-      var toml = __nccwpck_require__(4920)
-      // CONCATENATED MODULE: ./src/seocheck.mjs
-
-      function fails(frontmatter, elem, condition) {
-        if (!frontmatter.data[elem]) {
-          return true
-        } else if (frontmatter.data[elem].length <= 0) {
-          return true
-        } else if (frontmatter.data[elem].length > condition) {
-          return true
-        }
-      }
-
-      function check(file) {
-        const errors = []
-        const conditions = []
-        conditions.push({
-          title: 'maxTitleLength',
-          attribute: 'title',
-          value: parseInt(core.getInput('max_title_length'))
-        })
-        conditions.push({
-          title: 'maxDescriptionLength',
-          attribute: 'description',
-          value: parseInt(core.getInput('max_description_length'))
-        })
-        conditions.push({
-          title: 'maxSlugLength',
-          attribute: 'slug',
-          value: parseInt(core.getInput('max_slug_length'))
-        })
-
-        let frontmatter
-        if (file.content.startsWith('+++')) {
-          frontmatter = gray_matter(file.content, {
-            language: 'toml',
-            delims: '+++',
-            engines: {
-              toml: toml.parse.bind(toml)
-            }
-          })
-        } else {
-          frontmatter = gray_matter(file.content)
-        }
-
-        if (
-          !frontmatter ||
-          !frontmatter.data ||
-          Object.keys(frontmatter.data).length <= 0
-        ) {
-          core.info(`No valid frontmatter in ${file.name}`)
-          return {
-            file: file.name,
-            ok: false
-          }
-        }
-
-        for (const condition of conditions) {
-          if (fails(frontmatter, condition.attribute, condition.value)) {
-            const actual = frontmatter.data[condition.attribute]
-              ? frontmatter.data[condition.attribute].length
-              : 0
-            errors.push({
-              title: condition.title,
-              attribute: condition.attribute,
-              expected: condition.value,
-              actual: actual
-            })
-          }
-        }
-
-        if (errors.length > 0) {
-          return {
-            file: file.name,
-            ok: false,
-            errors: errors
-          }
-        } else {
-          return {
-            file: file.name,
-            ok: true
-          }
-        }
-      }
-
-      // EXTERNAL MODULE: ./node_modules/node-fetch/lib/index.js
-      var lib = __nccwpck_require__(467)
-      // CONCATENATED MODULE: ./src/getFile.mjs
-
-      function getErrorText(res) {
-        try {
-          return res.text()
-        } catch (err) {
-          return res.statusText
-        }
-      }
-
-      async function getError(res, path) {
-        const errorText = await getErrorText(res)
-        const error = new Error(
-          `GitHub raw download error (${path} - ${res.status}): ${errorText}`
-        )
-
-        error.status = res.status
-        error.headers = res.headers.raw()
-
-        return error
-      }
-
-      async function getRawFileFromGitHub(rawUrl) {
-        const options = {}
-        if (process.env.GITHUB_TOKEN) {
-          options.headers = {
-            Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
-          }
-        }
-        const res = await lib(rawUrl, options)
-        if (res.ok) return res.text()
-        throw await getError(res, rawUrl)
-      }
-
-      async function getFile(file) {
-        let rawUrl = file.raw_url.replace(
-          'https://github.com',
-          'https://raw.githubusercontent.com'
-        )
-        rawUrl = rawUrl.replace('/raw/', '/')
-
-        return {
-          name: file.filename,
-          content: await getRawFileFromGitHub(rawUrl)
-        }
-      }
-
-      // EXTERNAL MODULE: ./node_modules/glob-to-regexp/index.js
-      var glob_to_regexp = __nccwpck_require__(7117)
-      // CONCATENATED MODULE: ./src/listFiles.mjs
-
-      async function listFiles_files() {
-        const context = github.context
-        const pullNumber = context.payload.pull_request.number
-        const includes = core.getInput('includes')
-        const excludes = core.getInput('excludes')
-
-        const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-        const { data: list } = await octokit.pulls.listFiles({
-          ...context.repo,
-          pull_number: pullNumber
-        })
-
-        const mdx = list.filter((f) => {
-          const reIncluded = glob_to_regexp(includes, { extended: true })
-          const reExcluded = glob_to_regexp(excludes, { extended: true })
-
-          return (
-            reIncluded.test(f.filename) === true &&
-            reExcluded.test(f.filename) === false
-          )
-        })
-
-        const filePromises = mdx.map(getFile)
-        return Promise.all(filePromises)
-      }
-
-      // CONCATENATED MODULE: ./src/comment.mjs
-      function comment(results) {
-        let str = ''
-        results.forEach((r) => {
-          str += `\n${r.ok ? ':white_check_mark:' : ':x:'}: ${r.file}`
-          if (r.errors) {
-            r.errors.map((e) => {
-              str += `\n- :small_red_triangle: **${e.title}**: _${e.attribute}_ has **${e.actual}** characters. Should be less than **${e.expected}**`
-            })
-            str += '\n\n'
-          }
-        })
-        return str.toString()
-      }
-
-      // CONCATENATED MODULE: ./src/index.mjs
-
-      async function run() {
-        const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-        const context = github.context
-        let hasErrors = false
-
-        try {
-          core.info(`Starting Markdown SEO Check ...`)
-          const files = await listFiles_files()
-          if (!files || files.length === 0) {
-            return
-          }
-          const results = files.map(check).filter((i) => i.file)
-          hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
-          const message = comment(results)
-          if (message && message.length > 0) {
-            await octokit.issues.createComment({
-              ...context.repo,
-              issue_number: context.payload.number,
-              body: `SEO Check: \n\n${message}`
-            })
-          }
-
-          if (hasErrors && hasErrors.length > 0) {
-            core.warning(hasErrors)
-            core.setFailed('Check failed.')
-          }
-        } catch (error) {
-          core.error(error)
-          core.setFailed(error.message)
-        }
-      }
-
-      run()
-
-      /***/
-    },
-
     /***/ 2877: /***/ (module) => {
       module.exports = eval('require')('encoding')
 
@@ -17966,8 +17739,9 @@ module.exports = /******/ (() => {
   /******/
   /******/ /******/ function __nccwpck_require__(moduleId) {
     /******/ // Check if module is in cache
-    /******/ if (__webpack_module_cache__[moduleId]) {
-      /******/ return __webpack_module_cache__[moduleId].exports
+    /******/ var cachedModule = __webpack_module_cache__[moduleId]
+    /******/ if (cachedModule !== undefined) {
+      /******/ return cachedModule.exports
       /******/
     } // Create a new module (and put it into the cache)
     /******/ /******/ var module = (__webpack_module_cache__[moduleId] = {
@@ -18013,10 +17787,232 @@ module.exports = /******/ (() => {
   })() /* webpack/runtime/compat */
   /******/
   /******/ /******/
-  /******/ __nccwpck_require__.ab =
-    __dirname +
-    '/' /************************************************************************/ // module exports must be returned from runtime so entry inlining is disabled // startup // Load entry module and return exports
-  /******/ /******/ /******/ /******/ return __nccwpck_require__(8937)
+  /******/ if (typeof __nccwpck_require__ !== 'undefined')
+    __nccwpck_require__.ab =
+      __dirname +
+      '/' /************************************************************************/
+  var __webpack_exports__ = {}
+  // This entry need to be wrapped in an IIFE because it need to be in strict mode.
+  ;(() => {
+    'use strict'
+    // ESM COMPAT FLAG
+    __nccwpck_require__.r(__webpack_exports__)
+
+    // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+    var core = __nccwpck_require__(2186)
+    // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+    var github = __nccwpck_require__(5438)
+    // EXTERNAL MODULE: ./node_modules/gray-matter/index.js
+    var gray_matter = __nccwpck_require__(5382)
+    // EXTERNAL MODULE: ./node_modules/toml/index.js
+    var toml = __nccwpck_require__(4920) // CONCATENATED MODULE: ./src/seocheck.mjs
+    function fails(frontmatter, elem, condition) {
+      if (!frontmatter.data[elem]) {
+        return true
+      } else if (frontmatter.data[elem].length <= 0) {
+        return true
+      } else if (frontmatter.data[elem].length > condition) {
+        return true
+      }
+    }
+
+    function check(file) {
+      const errors = []
+      const conditions = []
+      conditions.push({
+        title: 'maxTitleLength',
+        attribute: 'title',
+        value: parseInt(core.getInput('max_title_length'))
+      })
+      conditions.push({
+        title: 'maxDescriptionLength',
+        attribute: 'description',
+        value: parseInt(core.getInput('max_description_length'))
+      })
+      conditions.push({
+        title: 'maxSlugLength',
+        attribute: 'slug',
+        value: parseInt(core.getInput('max_slug_length'))
+      })
+
+      let frontmatter
+      if (file.content.startsWith('+++')) {
+        frontmatter = gray_matter(file.content, {
+          language: 'toml',
+          delims: '+++',
+          engines: {
+            toml: toml.parse.bind(toml)
+          }
+        })
+      } else {
+        frontmatter = gray_matter(file.content)
+      }
+
+      if (
+        !frontmatter ||
+        !frontmatter.data ||
+        Object.keys(frontmatter.data).length <= 0
+      ) {
+        core.info(`No valid frontmatter in ${file.name}`)
+        return {
+          file: file.name,
+          ok: false
+        }
+      }
+
+      for (const condition of conditions) {
+        if (fails(frontmatter, condition.attribute, condition.value)) {
+          const actual = frontmatter.data[condition.attribute]
+            ? frontmatter.data[condition.attribute].length
+            : 0
+          errors.push({
+            title: condition.title,
+            attribute: condition.attribute,
+            expected: condition.value,
+            actual: actual
+          })
+        }
+      }
+
+      if (errors.length > 0) {
+        return {
+          file: file.name,
+          ok: false,
+          errors: errors
+        }
+      } else {
+        return {
+          file: file.name,
+          ok: true
+        }
+      }
+    }
+
+    // EXTERNAL MODULE: ./node_modules/node-fetch/lib/index.js
+    var lib = __nccwpck_require__(467) // CONCATENATED MODULE: ./src/getFile.mjs
+    function getErrorText(res) {
+      try {
+        return res.text()
+      } catch (err) {
+        return res.statusText
+      }
+    }
+
+    async function getError(res, path) {
+      const errorText = await getErrorText(res)
+      const error = new Error(
+        `GitHub raw download error (${path} - ${res.status}): ${errorText}`
+      )
+
+      error.status = res.status
+      error.headers = res.headers.raw()
+
+      return error
+    }
+
+    async function getRawFileFromGitHub(rawUrl) {
+      const options = {}
+      if (process.env.GITHUB_TOKEN) {
+        options.headers = {
+          Authorization: `Bearer ${process.env.GITHUB_TOKEN}`
+        }
+      }
+      const res = await lib(rawUrl, options)
+      if (res.ok) return res.text()
+      throw await getError(res, rawUrl)
+    }
+
+    async function getFile(file) {
+      let rawUrl = file.raw_url.replace(
+        'https://github.com',
+        'https://raw.githubusercontent.com'
+      )
+      rawUrl = rawUrl.replace('/raw/', '/')
+
+      return {
+        name: file.filename,
+        content: await getRawFileFromGitHub(rawUrl)
+      }
+    }
+
+    // EXTERNAL MODULE: ./node_modules/glob-to-regexp/index.js
+    var glob_to_regexp = __nccwpck_require__(7117) // CONCATENATED MODULE: ./src/listFiles.mjs
+    async function listFiles_files() {
+      const context = github.context
+      const pullNumber = context.payload.pull_request.number
+      const includes = core.getInput('includes')
+      const excludes = core.getInput('excludes')
+
+      const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+      const { data: list } = await octokit.pulls.listFiles({
+        ...context.repo,
+        pull_number: pullNumber
+      })
+
+      const mdx = list.filter((f) => {
+        const reIncluded = glob_to_regexp(includes, { extended: true })
+        const reExcluded = glob_to_regexp(excludes, { extended: true })
+
+        return (
+          reIncluded.test(f.filename) === true &&
+          reExcluded.test(f.filename) === false
+        )
+      })
+
+      const filePromises = mdx.map(getFile)
+      return Promise.all(filePromises)
+    } // CONCATENATED MODULE: ./src/comment.mjs
+
+    function comment(results) {
+      let str = ''
+      results.forEach((r) => {
+        str += `\n${r.ok ? ':white_check_mark:' : ':x:'}: ${r.file}`
+        if (r.errors) {
+          r.errors.map((e) => {
+            str += `\n- :small_red_triangle: **${e.title}**: _${e.attribute}_ has **${e.actual}** characters. Should be less than **${e.expected}**`
+          })
+          str += '\n\n'
+        }
+      })
+      return str.toString()
+    } // CONCATENATED MODULE: ./src/index.mjs
+
+    async function run() {
+      const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
+      const context = github.context
+      let hasErrors = false
+
+      try {
+        core.info(`Starting Markdown SEO Check ...`)
+        const files = await listFiles_files()
+        if (!files || files.length === 0) {
+          return
+        }
+        const results = files.map(check).filter((i) => i.file)
+        hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
+        const message = comment(results)
+        if (message && message.length > 0) {
+          await octokit.issues.createComment({
+            ...context.repo,
+            issue_number: context.payload.number,
+            body: `SEO Check: \n\n${message}`
+          })
+        }
+
+        if (hasErrors && hasErrors.length > 0) {
+          core.warning(hasErrors)
+          core.setFailed('Check failed.')
+        }
+      } catch (error) {
+        core.error(error)
+        core.setFailed(error.message)
+      }
+    }
+
+    run()
+  })()
+
+  module.exports = __webpack_exports__
   /******/
 })()
 //# sourceMappingURL=index.js.map
