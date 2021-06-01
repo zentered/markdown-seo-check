@@ -9,6 +9,34 @@ require('./sourcemap-register.js')
     ) {
       'use strict'
 
+      var __createBinding =
+        (this && this.__createBinding) ||
+        (Object.create
+          ? function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k
+              Object.defineProperty(o, k2, {
+                enumerable: true,
+                get: function () {
+                  return m[k]
+                }
+              })
+            }
+          : function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k
+              o[k2] = m[k]
+            })
+      var __setModuleDefault =
+        (this && this.__setModuleDefault) ||
+        (Object.create
+          ? function (o, v) {
+              Object.defineProperty(o, 'default', {
+                enumerable: true,
+                value: v
+              })
+            }
+          : function (o, v) {
+              o['default'] = v
+            })
       var __importStar =
         (this && this.__importStar) ||
         function (mod) {
@@ -16,11 +44,13 @@ require('./sourcemap-register.js')
           var result = {}
           if (mod != null)
             for (var k in mod)
-              if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k]
-          result['default'] = mod
+              if (k !== 'default' && Object.hasOwnProperty.call(mod, k))
+                __createBinding(result, mod, k)
+          __setModuleDefault(result, mod)
           return result
         }
       Object.defineProperty(exports, '__esModule', { value: true })
+      exports.issue = exports.issueCommand = void 0
       const os = __importStar(__nccwpck_require__(2087))
       const utils_1 = __nccwpck_require__(5278)
       /**
@@ -103,6 +133,46 @@ require('./sourcemap-register.js')
     ) {
       'use strict'
 
+      var __createBinding =
+        (this && this.__createBinding) ||
+        (Object.create
+          ? function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k
+              Object.defineProperty(o, k2, {
+                enumerable: true,
+                get: function () {
+                  return m[k]
+                }
+              })
+            }
+          : function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k
+              o[k2] = m[k]
+            })
+      var __setModuleDefault =
+        (this && this.__setModuleDefault) ||
+        (Object.create
+          ? function (o, v) {
+              Object.defineProperty(o, 'default', {
+                enumerable: true,
+                value: v
+              })
+            }
+          : function (o, v) {
+              o['default'] = v
+            })
+      var __importStar =
+        (this && this.__importStar) ||
+        function (mod) {
+          if (mod && mod.__esModule) return mod
+          var result = {}
+          if (mod != null)
+            for (var k in mod)
+              if (k !== 'default' && Object.hasOwnProperty.call(mod, k))
+                __createBinding(result, mod, k)
+          __setModuleDefault(result, mod)
+          return result
+        }
       var __awaiter =
         (this && this.__awaiter) ||
         function (thisArg, _arguments, P, generator) {
@@ -138,18 +208,27 @@ require('./sourcemap-register.js')
             )
           })
         }
-      var __importStar =
-        (this && this.__importStar) ||
-        function (mod) {
-          if (mod && mod.__esModule) return mod
-          var result = {}
-          if (mod != null)
-            for (var k in mod)
-              if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k]
-          result['default'] = mod
-          return result
-        }
       Object.defineProperty(exports, '__esModule', { value: true })
+      exports.getState =
+        exports.saveState =
+        exports.group =
+        exports.endGroup =
+        exports.startGroup =
+        exports.info =
+        exports.warning =
+        exports.error =
+        exports.debug =
+        exports.isDebug =
+        exports.setFailed =
+        exports.setCommandEcho =
+        exports.setOutput =
+        exports.getBooleanInput =
+        exports.getInput =
+        exports.addPath =
+        exports.setSecret =
+        exports.exportVariable =
+        exports.ExitCode =
+          void 0
       const command_1 = __nccwpck_require__(7351)
       const file_command_1 = __nccwpck_require__(717)
       const utils_1 = __nccwpck_require__(5278)
@@ -216,7 +295,9 @@ require('./sourcemap-register.js')
       }
       exports.addPath = addPath
       /**
-       * Gets the value of an input.  The value is also trimmed.
+       * Gets the value of an input.
+       * Unless trimWhitespace is set to false in InputOptions, the value is also trimmed.
+       * Returns an empty string if the value is not defined.
        *
        * @param     name     name of the input to get
        * @param     options  optional. See InputOptions.
@@ -228,9 +309,34 @@ require('./sourcemap-register.js')
         if (options && options.required && !val) {
           throw new Error(`Input required and not supplied: ${name}`)
         }
+        if (options && options.trimWhitespace === false) {
+          return val
+        }
         return val.trim()
       }
       exports.getInput = getInput
+      /**
+       * Gets the input value of the boolean type in the YAML 1.2 "core schema" specification.
+       * Support boolean input list: `true | True | TRUE | false | False | FALSE` .
+       * The return value is also in boolean type.
+       * ref: https://yaml.org/spec/1.2/spec.html#id2804923
+       *
+       * @param     name     name of the input to get
+       * @param     options  optional. See InputOptions.
+       * @returns   boolean
+       */
+      function getBooleanInput(name, options) {
+        const trueValue = ['true', 'True', 'TRUE']
+        const falseValue = ['false', 'False', 'FALSE']
+        const val = getInput(name, options)
+        if (trueValue.includes(val)) return true
+        if (falseValue.includes(val)) return false
+        throw new TypeError(
+          `Input does not meet YAML 1.2 "Core Schema" specification: ${name}\n` +
+            `Support boolean input list: \`true | True | TRUE | false | False | FALSE\``
+        )
+      }
+      exports.getBooleanInput = getBooleanInput
       /**
        * Sets the value of an output.
        *
@@ -389,6 +495,34 @@ require('./sourcemap-register.js')
       'use strict'
 
       // For internal use, subject to change.
+      var __createBinding =
+        (this && this.__createBinding) ||
+        (Object.create
+          ? function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k
+              Object.defineProperty(o, k2, {
+                enumerable: true,
+                get: function () {
+                  return m[k]
+                }
+              })
+            }
+          : function (o, m, k, k2) {
+              if (k2 === undefined) k2 = k
+              o[k2] = m[k]
+            })
+      var __setModuleDefault =
+        (this && this.__setModuleDefault) ||
+        (Object.create
+          ? function (o, v) {
+              Object.defineProperty(o, 'default', {
+                enumerable: true,
+                value: v
+              })
+            }
+          : function (o, v) {
+              o['default'] = v
+            })
       var __importStar =
         (this && this.__importStar) ||
         function (mod) {
@@ -396,11 +530,13 @@ require('./sourcemap-register.js')
           var result = {}
           if (mod != null)
             for (var k in mod)
-              if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k]
-          result['default'] = mod
+              if (k !== 'default' && Object.hasOwnProperty.call(mod, k))
+                __createBinding(result, mod, k)
+          __setModuleDefault(result, mod)
           return result
         }
       Object.defineProperty(exports, '__esModule', { value: true })
+      exports.issueCommand = void 0
       // We use any as a valid input type
       /* eslint-disable @typescript-eslint/no-explicit-any */
       const fs = __importStar(__nccwpck_require__(5747))
@@ -436,6 +572,7 @@ require('./sourcemap-register.js')
       // We use any as a valid input type
       /* eslint-disable @typescript-eslint/no-explicit-any */
       Object.defineProperty(exports, '__esModule', { value: true })
+      exports.toCommandValue = void 0
       /**
        * Sanitizes an input into a string so it can be passed into issueCommand safely
        * @param input input to sanitize into a string
@@ -638,7 +775,10 @@ require('./sourcemap-register.js')
           return result
         }
       Object.defineProperty(exports, '__esModule', { value: true })
-      exports.getApiBaseUrl = exports.getProxyAgent = exports.getAuthString = void 0
+      exports.getApiBaseUrl =
+        exports.getProxyAgent =
+        exports.getAuthString =
+          void 0
       const httpClient = __importStar(__nccwpck_require__(9925))
       function getAuthString(token, options) {
         if (!token && !options.auth) {
@@ -962,13 +1102,12 @@ require('./sourcemap-register.js')
             Headers.Accept,
             MediaTypes.ApplicationJson
           )
-          additionalHeaders[
-            Headers.ContentType
-          ] = this._getExistingOrDefaultHeader(
-            additionalHeaders,
-            Headers.ContentType,
-            MediaTypes.ApplicationJson
-          )
+          additionalHeaders[Headers.ContentType] =
+            this._getExistingOrDefaultHeader(
+              additionalHeaders,
+              Headers.ContentType,
+              MediaTypes.ApplicationJson
+            )
           let res = await this.post(requestUrl, data, additionalHeaders)
           return this._processResponse(res, this.requestOptions)
         }
@@ -979,13 +1118,12 @@ require('./sourcemap-register.js')
             Headers.Accept,
             MediaTypes.ApplicationJson
           )
-          additionalHeaders[
-            Headers.ContentType
-          ] = this._getExistingOrDefaultHeader(
-            additionalHeaders,
-            Headers.ContentType,
-            MediaTypes.ApplicationJson
-          )
+          additionalHeaders[Headers.ContentType] =
+            this._getExistingOrDefaultHeader(
+              additionalHeaders,
+              Headers.ContentType,
+              MediaTypes.ApplicationJson
+            )
           let res = await this.put(requestUrl, data, additionalHeaders)
           return this._processResponse(res, this.requestOptions)
         }
@@ -996,13 +1134,12 @@ require('./sourcemap-register.js')
             Headers.Accept,
             MediaTypes.ApplicationJson
           )
-          additionalHeaders[
-            Headers.ContentType
-          ] = this._getExistingOrDefaultHeader(
-            additionalHeaders,
-            Headers.ContentType,
-            MediaTypes.ApplicationJson
-          )
+          additionalHeaders[Headers.ContentType] =
+            this._getExistingOrDefaultHeader(
+              additionalHeaders,
+              Headers.ContentType,
+              MediaTypes.ApplicationJson
+            )
           let res = await this.patch(requestUrl, data, additionalHeaders)
           return this._processResponse(res, this.requestOptions)
         }
@@ -2408,9 +2545,8 @@ require('./sourcemap-register.js')
                 url,
                 headers
               })
-              const normalizedResponse = normalizePaginatedListResponse(
-                response
-              ) // `response.headers.link` format:
+              const normalizedResponse =
+                normalizePaginatedListResponse(response) // `response.headers.link` format:
               // '<https://api.github.com/users/aseemk/followers?page=2>; rel="next", <https://api.github.com/users/aseemk/followers?page=2>; rel="last"'
               // sets `url` to undefined if "next" URL is not present or `link` header is not set
 
@@ -4446,9 +4582,8 @@ require('./sourcemap-register.js')
               continue
             }
 
-            scopeMethods[methodName] = octokit.request.defaults(
-              endpointDefaults
-            )
+            scopeMethods[methodName] =
+              octokit.request.defaults(endpointDefaults)
           }
         }
 
@@ -6967,11 +7102,13 @@ require('./sourcemap-register.js')
       var CHOMPING_STRIP = 2
       var CHOMPING_KEEP = 3
 
-      var PATTERN_NON_PRINTABLE = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/
+      var PATTERN_NON_PRINTABLE =
+        /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x84\x86-\x9F\uFFFE\uFFFF]|[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?:[^\uD800-\uDBFF]|^)[\uDC00-\uDFFF]/
       var PATTERN_NON_ASCII_LINE_BREAKS = /[\x85\u2028\u2029]/
       var PATTERN_FLOW_INDICATORS = /[,\[\]\{\}]/
       var PATTERN_TAG_HANDLE = /^(?:!|!!|![a-z\-]+!)$/i
-      var PATTERN_TAG_URI = /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i
+      var PATTERN_TAG_URI =
+        /^(?:!|[^,\[\]\{\}])(?:%[0-9a-f]{2}|[0-9a-z\-#;\/\?:@&=\+\$,_\.!~\*'\(\)\[\]])*$/i
 
       function _class(obj) {
         return Object.prototype.toString.call(obj)
@@ -8441,8 +8578,11 @@ require('./sourcemap-register.js')
         state.kind = null
         state.result = null
 
-        allowBlockStyles = allowBlockScalars = allowBlockCollections =
-          CONTEXT_BLOCK_OUT === nodeContext || CONTEXT_BLOCK_IN === nodeContext
+        allowBlockStyles =
+          allowBlockScalars =
+          allowBlockCollections =
+            CONTEXT_BLOCK_OUT === nodeContext ||
+            CONTEXT_BLOCK_IN === nodeContext
 
         if (allowToSeek) {
           if (skipSeparationSpace(state, true, -1)) {
@@ -11181,13 +11321,15 @@ require('./sourcemap-register.js')
 
         // html4
         if (!res && str) {
-          res = /<meta[\s]+?http-equiv=(['"])content-type\1[\s]+?content=(['"])(.+?)\2/i.exec(
-            str
-          )
-          if (!res) {
-            res = /<meta[\s]+?content=(['"])(.+?)\1[\s]+?http-equiv=(['"])content-type\3/i.exec(
+          res =
+            /<meta[\s]+?http-equiv=(['"])content-type\1[\s]+?content=(['"])(.+?)\2/i.exec(
               str
             )
+          if (!res) {
+            res =
+              /<meta[\s]+?content=(['"])(.+?)\1[\s]+?http-equiv=(['"])content-type\3/i.exec(
+                str
+              )
             if (res) {
               res.pop() // drop last quote
             }
@@ -17733,25 +17875,29 @@ require('./sourcemap-register.js')
     }
 
     /******/
-  } // The module cache
+  }
   /************************************************************************/
-  /******/ /******/ var __webpack_module_cache__ = {} // The require function
+  /******/ // The module cache
+  /******/ var __webpack_module_cache__ = {}
   /******/
-  /******/ /******/ function __nccwpck_require__(moduleId) {
+  /******/ // The require function
+  /******/ function __nccwpck_require__(moduleId) {
     /******/ // Check if module is in cache
     /******/ var cachedModule = __webpack_module_cache__[moduleId]
     /******/ if (cachedModule !== undefined) {
       /******/ return cachedModule.exports
       /******/
-    } // Create a new module (and put it into the cache)
-    /******/ /******/ var module = (__webpack_module_cache__[moduleId] = {
+    }
+    /******/ // Create a new module (and put it into the cache)
+    /******/ var module = (__webpack_module_cache__[moduleId] = {
       /******/ // no module.id needed
       /******/ // no module.loaded needed
       /******/ exports: {}
       /******/
-    }) // Execute the module function
+    })
     /******/
-    /******/ /******/ var threw = true
+    /******/ // Execute the module function
+    /******/ var threw = true
     /******/ try {
       /******/ __webpack_modules__[moduleId].call(
         module.exports,
@@ -17764,14 +17910,16 @@ require('./sourcemap-register.js')
     } finally {
       /******/ if (threw) delete __webpack_module_cache__[moduleId]
       /******/
-    } // Return the exports of the module
+    }
     /******/
-    /******/ /******/ return module.exports
+    /******/ // Return the exports of the module
+    /******/ return module.exports
     /******/
-  } /* webpack/runtime/make namespace object */
+  }
   /******/
   /************************************************************************/
-  /******/ /******/ ;(() => {
+  /******/ /* webpack/runtime/make namespace object */
+  /******/ ;(() => {
     /******/ // define __esModule on exports
     /******/ __nccwpck_require__.r = (exports) => {
       /******/ if (typeof Symbol !== 'undefined' && Symbol.toStringTag) {
@@ -17784,9 +17932,10 @@ require('./sourcemap-register.js')
       /******/
     }
     /******/
-  })() /* webpack/runtime/compat */
+  })()
   /******/
-  /******/ /******/
+  /******/ /* webpack/runtime/compat */
+  /******/
   /******/ if (typeof __nccwpck_require__ !== 'undefined')
     __nccwpck_require__.ab =
       __dirname +
