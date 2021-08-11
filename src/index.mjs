@@ -19,7 +19,7 @@ async function run() {
     hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
     const message = comment(results)
     if (message && message.length > 0) {
-      await octokit.issues.createComment({
+      await octokit.rest.issues.createComment({
         ...context.repo,
         issue_number: context.payload.number,
         body: `SEO Check: \n\n${message}`

@@ -18024,7 +18024,7 @@ var __webpack_exports__ = {}
     const excludes = core.getInput('excludes')
 
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-    const { data: list } = await octokit.pulls.listFiles({
+    const { data: list } = await octokit.rest.pulls.listFiles({
       ...context.repo,
       pull_number: pullNumber
     })
@@ -18072,7 +18072,7 @@ var __webpack_exports__ = {}
       hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
       const message = comment(results)
       if (message && message.length > 0) {
-        await octokit.issues.createComment({
+        await octokit.rest.issues.createComment({
           ...context.repo,
           issue_number: context.payload.number,
           body: `SEO Check: \n\n${message}`

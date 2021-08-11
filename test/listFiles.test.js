@@ -27,29 +27,31 @@ jest.mock('@actions/github', () => {
     },
     getOctokit: jest.fn().mockImplementation(() => {
       return {
-        pulls: {
-          listFiles: jest.fn().mockImplementation(() => {
-            return {
-              data: [
-                {
-                  filename: '/exclude/index.md',
-                  raw_url: 'https://github.com/test/test/raw/123/exclude.md'
-                },
-                {
-                  filename: 'test.md',
-                  raw_url: 'https://github.com/test/test/raw/123/test.md'
-                },
-                {
-                  filename: '/include/index.mdx',
-                  raw_url: 'https://github.com/test/test/raw/123/index.mdx'
-                },
-                {
-                  filename: '/include/blog.md',
-                  raw_url: 'https://github.com/test/test/raw/123/blog.md'
-                }
-              ]
-            }
-          })
+        rest: {
+          pulls: {
+            listFiles: jest.fn().mockImplementation(() => {
+              return {
+                data: [
+                  {
+                    filename: '/exclude/index.md',
+                    raw_url: 'https://github.com/test/test/raw/123/exclude.md'
+                  },
+                  {
+                    filename: 'test.md',
+                    raw_url: 'https://github.com/test/test/raw/123/test.md'
+                  },
+                  {
+                    filename: '/include/index.mdx',
+                    raw_url: 'https://github.com/test/test/raw/123/index.mdx'
+                  },
+                  {
+                    filename: '/include/blog.md',
+                    raw_url: 'https://github.com/test/test/raw/123/blog.md'
+                  }
+                ]
+              }
+            })
+          }
         }
       }
     })

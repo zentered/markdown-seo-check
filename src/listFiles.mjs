@@ -10,7 +10,7 @@ export default async function files() {
   const excludes = core.getInput('excludes')
 
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-  const { data: list } = await octokit.pulls.listFiles({
+  const { data: list } = await octokit.rest.pulls.listFiles({
     ...context.repo,
     pull_number: pullNumber
   })
