@@ -3401,6 +3401,7 @@ require('./sourcemap-register.js')
           ],
           getUserInstallation: ['GET /users/{username}/installation'],
           getWebhookConfigForApp: ['GET /app/hook/config'],
+          getWebhookDelivery: ['GET /app/hook/deliveries/{delivery_id}'],
           listAccountsForPlan: [
             'GET /marketplace_listing/plans/{plan_id}/accounts'
           ],
@@ -3420,6 +3421,10 @@ require('./sourcemap-register.js')
           ],
           listSubscriptionsForAuthenticatedUserStubbed: [
             'GET /user/marketplace_purchases/stubbed'
+          ],
+          listWebhookDeliveries: ['GET /app/hook/deliveries'],
+          redeliverWebhookDelivery: [
+            'POST /app/hook/deliveries/{delivery_id}/attempts'
           ],
           removeRepoFromInstallation: [
             'DELETE /user/installations/{installation_id}/repositories/{repository_id}'
@@ -3517,22 +3522,8 @@ require('./sourcemap-register.js')
           uploadSarif: ['POST /repos/{owner}/{repo}/code-scanning/sarifs']
         },
         codesOfConduct: {
-          getAllCodesOfConduct: [
-            'GET /codes_of_conduct',
-            {
-              mediaType: {
-                previews: ['scarlet-witch']
-              }
-            }
-          ],
-          getConductCode: [
-            'GET /codes_of_conduct/{key}',
-            {
-              mediaType: {
-                previews: ['scarlet-witch']
-              }
-            }
-          ],
+          getAllCodesOfConduct: ['GET /codes_of_conduct'],
+          getConductCode: ['GET /codes_of_conduct/{key}'],
           getForRepo: [
             'GET /repos/{owner}/{repo}/community/code_of_conduct',
             {
@@ -3892,6 +3883,9 @@ require('./sourcemap-register.js')
           getMembershipForUser: ['GET /orgs/{org}/memberships/{username}'],
           getWebhook: ['GET /orgs/{org}/hooks/{hook_id}'],
           getWebhookConfigForOrg: ['GET /orgs/{org}/hooks/{hook_id}/config'],
+          getWebhookDelivery: [
+            'GET /orgs/{org}/hooks/{hook_id}/deliveries/{delivery_id}'
+          ],
           list: ['GET /organizations'],
           listAppInstallations: ['GET /orgs/{org}/installations'],
           listBlockedUsers: ['GET /orgs/{org}/blocks'],
@@ -3906,8 +3900,12 @@ require('./sourcemap-register.js')
           listOutsideCollaborators: ['GET /orgs/{org}/outside_collaborators'],
           listPendingInvitations: ['GET /orgs/{org}/invitations'],
           listPublicMembers: ['GET /orgs/{org}/public_members'],
+          listWebhookDeliveries: ['GET /orgs/{org}/hooks/{hook_id}/deliveries'],
           listWebhooks: ['GET /orgs/{org}/hooks'],
           pingWebhook: ['POST /orgs/{org}/hooks/{hook_id}/pings'],
+          redeliverWebhookDelivery: [
+            'POST /orgs/{org}/hooks/{hook_id}/deliveries/{delivery_id}/attempts'
+          ],
           removeMember: ['DELETE /orgs/{org}/members/{username}'],
           removeMembershipForUser: [
             'DELETE /orgs/{org}/memberships/{username}'
@@ -4741,6 +4739,9 @@ require('./sourcemap-register.js')
           getWebhookConfigForRepo: [
             'GET /repos/{owner}/{repo}/hooks/{hook_id}/config'
           ],
+          getWebhookDelivery: [
+            'GET /repos/{owner}/{repo}/hooks/{hook_id}/deliveries/{delivery_id}'
+          ],
           listBranches: ['GET /repos/{owner}/{repo}/branches'],
           listBranchesForHeadCommit: [
             'GET /repos/{owner}/{repo}/commits/{commit_sha}/branches-where-head',
@@ -4790,9 +4791,15 @@ require('./sourcemap-register.js')
           listReleases: ['GET /repos/{owner}/{repo}/releases'],
           listTags: ['GET /repos/{owner}/{repo}/tags'],
           listTeams: ['GET /repos/{owner}/{repo}/teams'],
+          listWebhookDeliveries: [
+            'GET /repos/{owner}/{repo}/hooks/{hook_id}/deliveries'
+          ],
           listWebhooks: ['GET /repos/{owner}/{repo}/hooks'],
           merge: ['POST /repos/{owner}/{repo}/merges'],
           pingWebhook: ['POST /repos/{owner}/{repo}/hooks/{hook_id}/pings'],
+          redeliverWebhookDelivery: [
+            'POST /repos/{owner}/{repo}/hooks/{hook_id}/deliveries/{delivery_id}/attempts'
+          ],
           removeAppAccessRestrictions: [
             'DELETE /repos/{owner}/{repo}/branches/{branch}/protection/restrictions/apps',
             {},
@@ -5074,7 +5081,7 @@ require('./sourcemap-register.js')
         }
       }
 
-      const VERSION = '5.3.7'
+      const VERSION = '5.5.2'
 
       function endpointsToMethods(octokit, endpointsMap) {
         const newMethods = {}
@@ -18450,7 +18457,7 @@ require('./sourcemap-register.js')
       const excludes = core.getInput('excludes')
 
       const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
-      const { data: list } = await octokit.pulls.listFiles({
+      const { data: list } = await octokit.rest.pulls.listFiles({
         ...context.repo,
         pull_number: pullNumber
       })
@@ -18498,7 +18505,7 @@ require('./sourcemap-register.js')
         hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
         const message = comment(results)
         if (message && message.length > 0) {
-          await octokit.issues.createComment({
+          await octokit.rest.issues.createComment({
             ...context.repo,
             issue_number: context.payload.number,
             body: `SEO Check: \n\n${message}`
