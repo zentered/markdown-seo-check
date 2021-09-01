@@ -1,3 +1,5 @@
+# Markdown SEO Check
+
 <p align="center">
   <img src="res/markdowncheck.png">
 </p>
@@ -9,8 +11,6 @@
   <a href="https://semantic-release.gitbook.io/semantic-release/"><img alt="Semantic Release bagde" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg"></a>
   <a href="https://zentered.co"><img alt="Semantic Release bagde" src="https://img.shields.io/badge/>-Zentered-lightgrey?style=flat"></a>
 </p>
-
-# Markdown SEO Check
 
 Validate markdown files with SEO best practices. Creates a pull request comment and fails if conditions are not met.
 
