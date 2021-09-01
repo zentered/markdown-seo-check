@@ -12,7 +12,8 @@
   <a href="https://zentered.co"><img alt="Semantic Release bagde" src="https://img.shields.io/badge/>-Zentered-lightgrey?style=flat"></a>
 </p>
 
-Validate markdown files with SEO best practices. Creates a pull request comment and fails if conditions are not met.
+Validate markdown files with SEO best practices. Creates a pull request comment
+and fails if conditions are not met.
 
 ## Table of Contents
 
@@ -22,7 +23,13 @@ Validate markdown files with SEO best practices. Creates a pull request comment 
 
 ## Usage
 
-If your repo is public and you have pull requests from forks, `pull_request_target` is required, as this Action creates a comment on a Pull Request and therefore requires read/write permissions. Read more about the `pull_request_target` trigger [here](https://securitylab.github.com/research/github-actions-preventing-pwn-requests). If your repo is private, you can change this to `pull_request` and remove the `ref` in the checkout action.
+If your repo is public and you have pull requests from forks,
+`pull_request_target` is required, as this Action creates a comment on a Pull
+Request and therefore requires read/write permissions. Read more about the
+`pull_request_target` trigger
+[here](https://securitylab.github.com/research/github-actions-preventing-pwn-requests).
+If your repo is private, you can change this to `pull_request` and remove the
+`ref` in the checkout action.
 
 ```yaml
 name: check
