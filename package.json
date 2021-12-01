@@ -54,7 +54,7 @@
     "toml": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.15.6",
+    "@babel/preset-env": "^7.16.4",
     "@commitlint/config-conventional": "^13.2.0",
     "@vercel/ncc": "^0.28.6",
     "babel-jest": "^27.1.0",
