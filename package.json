@@ -51,7 +51,7 @@
     "glob-to-regexp": "^0.4.1",
     "gray-matter": "^4.0.3",
     "node-fetch": "^3.0.0",
-    "toml": "^3.0.0"
+    "toml": "^5.0.1"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.15.6",
