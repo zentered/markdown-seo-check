@@ -1,5 +1,5 @@
-import core from '@actions/core'
-import github from '@actions/github'
+import * as core from '@actions/core'
+import * as github from '@actions/github'
 import checkMarkdownFile from './seocheck.mjs'
 import listFiles from './listFiles.mjs'
 import comment from './comment.mjs'
@@ -7,7 +7,6 @@ import comment from './comment.mjs'
 async function run() {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
   const context = github.context
-  let hasErrors = false
 
   try {
     core.info(`Starting Markdown SEO Check ...`)
@@ -16,7 +15,7 @@ async function run() {
       return
     }
     const results = files.map(checkMarkdownFile).filter((i) => i.file)
-    hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
+    const hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
     const message = comment(results)
     if (message && message.length > 0) {
       await octokit.rest.issues.createComment({
@@ -27,7 +26,12 @@ async function run() {
     }
 
     if (hasErrors && hasErrors.length > 0) {
-      core.warning(hasErrors)
+      for (const r of hasErrors) {
+        const details = r.errors
+          .map((e) => `${e.attribute}: ${e.actual} (expected ${e.expected})`)
+          .join(', ')
+        core.warning(`${r.file}: ${details}`)
+      }
       core.setFailed('Check failed.')
     }
   } catch (error) {

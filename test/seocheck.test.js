@@ -1,11 +1,14 @@
-/* eslint-disable node/no-unsupported-features/es-syntax */
 import check from '../src/seocheck.mjs'
 
-jest.mock('@actions/core', () => {
-  return {
-    getInput: jest.fn().mockReturnValue('10')
-  }
-})
+jest.mock(
+  '@actions/core',
+  () => {
+    return {
+      getInput: jest.fn().mockReturnValue('10')
+    }
+  },
+  { virtual: true }
+)
 
 const validMd = `---
 title: hello

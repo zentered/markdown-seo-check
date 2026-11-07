@@ -1,9 +1,7 @@
-import fetch from 'node-fetch'
-
-function getErrorText(res) {
+async function getErrorText(res) {
   try {
-    return res.text()
-  } catch (err) {
+    return await res.text()
+  } catch {
     return res.statusText
   }
 }
@@ -15,7 +13,7 @@ async function getError(res, path) {
   )
 
   error.status = res.status
-  error.headers = res.headers.raw()
+  error.headers = Object.fromEntries(res.headers)
 
   return error
 }
