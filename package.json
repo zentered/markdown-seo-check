@@ -21,7 +21,7 @@
   "contributors": [
     "Patrick Heneise (https://github.com/patrickheneise)"
   ],
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "scripts": {
     "start": "node -r dotenv/config src/index.mjs",
     "build": "npm run lint && npm run test && npm run prepare",
