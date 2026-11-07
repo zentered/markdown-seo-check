@@ -25,5 +25,5 @@ inputs:
     default: 100
 name: Markdown SEO Check
 runs:
-  main: dist/index.js
-  using: node12
+  main: dist/index.mjs
+  using: node24

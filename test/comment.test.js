@@ -1,4 +1,3 @@
-/* eslint-disable node/no-unsupported-features/es-syntax */
 import comment from '../src/comment.mjs'
 
 test('comment() should create a github issue comment', () => {
