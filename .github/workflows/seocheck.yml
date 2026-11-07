@@ -9,7 +9,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
-          node-version: 12
+          node-version: 24
       - name: Markdown SEO Check
         uses: ./
         with:
