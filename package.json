@@ -50,7 +50,7 @@
     "@actions/github": "^9.1.1",
     "glob-to-regexp": "^0.4.1",
     "gray-matter": "^4.0.3",
-    "toml": "^3.0.0"
+    "toml": "^5.0.1"
   },
   "devDependencies": {
     "@babel/core": "^8.1.0",
