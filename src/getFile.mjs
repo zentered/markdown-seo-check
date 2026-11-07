@@ -1,6 +1,6 @@
-function getErrorText(res) {
+async function getErrorText(res) {
   try {
-    return res.text()
+    return await res.text()
   } catch {
     return res.statusText
   }
