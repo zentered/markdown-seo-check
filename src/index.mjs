@@ -1,5 +1,5 @@
-import core from '@actions/core'
-import github from '@actions/github'
+import * as core from '@actions/core'
+import * as github from '@actions/github'
 import checkMarkdownFile from './seocheck.mjs'
 import listFiles from './listFiles.mjs'
 import comment from './comment.mjs'
