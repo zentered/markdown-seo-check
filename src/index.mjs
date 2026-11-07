@@ -26,7 +26,12 @@ async function run() {
     }
 
     if (hasErrors && hasErrors.length > 0) {
-      core.warning(hasErrors)
+      for (const r of hasErrors) {
+        const details = r.errors
+          .map((e) => `${e.attribute}: ${e.actual} (expected ${e.expected})`)
+          .join(', ')
+        core.warning(`${r.file}: ${details}`)
+      }
       core.setFailed('Check failed.')
     }
   } catch (error) {
