@@ -70,7 +70,7 @@
     "jest": "^30.5.2",
     "lint-staged": "^11.1.2",
     "pinst": "^2.1.6",
-    "prettier": "^2.4.1"
+    "prettier": "^3.9.10"
   },
   "engines": {
     "node": ">=24"
