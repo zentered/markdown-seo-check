@@ -47563,9 +47563,9 @@ function check(file) {
 }
 
 ;// CONCATENATED MODULE: ./src/getFile.mjs
-function getErrorText(res) {
+async function getErrorText(res) {
   try {
-    return res.text()
+    return await res.text()
   } catch {
     return res.statusText
   }
@@ -47686,7 +47686,12 @@ async function run() {
     }
 
     if (hasErrors && hasErrors.length > 0) {
-      warning(hasErrors)
+      for (const r of hasErrors) {
+        const details = r.errors
+          .map((e) => `${e.attribute}: ${e.actual} (expected ${e.expected})`)
+          .join(', ')
+        warning(`${r.file}: ${details}`)
+      }
       setFailed('Check failed.')
     }
   } catch (error) {
