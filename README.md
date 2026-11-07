@@ -23,29 +23,33 @@ and fails if conditions are not met.
 
 ## Usage
 
+The Action reads the changed files of a pull request through the GitHub API. It
+does not need `actions/checkout`. Do not check out the pull request head under
+`pull_request_target`: that runs untrusted code with a write token. Read more
+about the `pull_request_target` trigger
+[here](https://securitylab.github.com/research/github-actions-preventing-pwn-requests).
+
 If your repo is public and you have pull requests from forks,
 `pull_request_target` is required, as this Action creates a comment on a Pull
-Request and therefore requires read/write permissions. Read more about the
-`pull_request_target` trigger
-[here](https://securitylab.github.com/research/github-actions-preventing-pwn-requests).
-If your repo is private, you can change this to `pull_request` and remove the
-`ref` in the checkout action.
+Request and therefore requires write permission. If your repo is private, you
+can use `pull_request` instead.
 
 ```yaml
 name: check
 
 on: pull_request_target
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   seocheck:
     name: Markdown SEO Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
       - name: Markdown SEO Check
-        uses: zentered/markdown-seo-check@v1.1.0
+        uses: zentered/markdown-seo-check@v1.1.5
         with:
           max_title_length: 70
           max_description_length: 150
