@@ -7,7 +7,6 @@ import comment from './comment.mjs'
 async function run() {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN)
   const context = github.context
-  let hasErrors = false
 
   try {
     core.info(`Starting Markdown SEO Check ...`)
@@ -16,7 +15,7 @@ async function run() {
       return
     }
     const results = files.map(checkMarkdownFile).filter((i) => i.file)
-    hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
+    const hasErrors = results.filter((r) => r.errors && r.errors.length > 0)
     const message = comment(results)
     if (message && message.length > 0) {
       await octokit.rest.issues.createComment({

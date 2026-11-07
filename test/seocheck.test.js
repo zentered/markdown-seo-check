@@ -1,4 +1,3 @@
-/* eslint-disable node/no-unsupported-features/es-syntax */
 import check from '../src/seocheck.mjs'
 
 jest.mock(

@@ -1,7 +1,7 @@
 function getErrorText(res) {
   try {
     return res.text()
-  } catch (err) {
+  } catch {
     return res.statusText
   }
 }

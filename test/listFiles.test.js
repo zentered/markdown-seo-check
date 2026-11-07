@@ -1,4 +1,3 @@
-/* eslint-disable node/no-unsupported-features/es-syntax */
 import listFiles from '../src/listFiles.mjs'
 
 jest.mock(
